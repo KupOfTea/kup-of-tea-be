@@ -28,3 +28,10 @@ CREATE TABLE artist_members (
     team_id bigint,
     FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE SET NULL
 );
+
+
+CREATE TABLE users (
+  id VARCHAR(64) PRIMARY KEY,
+  pw VARCHAR(128) NOT NULL,
+  created TIMESTAMP NOT NULL DEFAULT NOW()
+);
