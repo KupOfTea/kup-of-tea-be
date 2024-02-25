@@ -9,22 +9,31 @@ struct Group {
     ticker: String,
 }
 
-#[get("/api/groups/get/{gender}")]
-pub async fn get_groups_api(db: web::Data<Pool>, path: web::Path<String>) -> impl Responder {
+#[get("/api/groups/get/{type}/{gender}")]
+pub async fn get_groups_api(
+    db: web::Data<Pool>,
+    path: web::Path<(String, String)>,
+) -> impl Responder {
     let client = db.get().await.unwrap();
 
-    let gender = path.trim();
+    let gender = path.0.trim();
 
     if gender != "boy" && gender != "girl" {
         return HttpResponse::InternalServerError().finish();
     }
 
+    let group_type = path.1.trim();
+
+    if group_type != "group" && group_type != "solo" {
+        return HttpResponse::InternalServerError().finish();
+    }
+
     let stmt_groups = client
-        .prepare("SELECT name, logo, ticker FROM teams WHERE gender = $1")
+        .prepare("SELECT name, logo, ticker FROM teams WHERE gender = $1 AND type = $2")
         .await
         .unwrap();
 
-    let groups_result = client.query(&stmt_groups, &[&gender]).await;
+    let groups_result = client.query(&stmt_groups, &[&gender, &group_type]).await;
 
     match groups_result {
         Ok(group_rows) => {
