@@ -49,6 +49,8 @@ pub async fn get_groups_api(
                 groups.push(group);
             }
 
+            groups.sort_by_key(|group| group.name.clone());
+
             HttpResponse::Ok().json(groups)
         }
         Err(_) => HttpResponse::InternalServerError().finish(),
