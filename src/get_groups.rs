@@ -18,7 +18,7 @@ pub async fn get_groups_api(
 
     let gender = path.0.trim();
 
-    if gender != "boy" && gender != "girl" {
+    if gender != "boy" && gender != "girl" && gender != "all" {
         return HttpResponse::InternalServerError().finish();
     }
 
@@ -28,12 +28,21 @@ pub async fn get_groups_api(
         return HttpResponse::InternalServerError().finish();
     }
 
-    let stmt_groups = client
-        .prepare("SELECT name, logo, ticker FROM teams WHERE gender = $1 AND type = $2")
-        .await
-        .unwrap();
+    let groups_result = if gender == "all" {
+        let stmt_groups = client
+            .prepare("SELECT name, logo, ticker FROM teams WHERE type = $1")
+            .await
+            .unwrap();
 
-    let groups_result = client.query(&stmt_groups, &[&gender, &group_type]).await;
+        client.query(&stmt_groups, &[&group_type]).await
+    } else {
+        let stmt_groups = client
+            .prepare("SELECT name, logo, ticker FROM teams WHERE gender = $1 AND type = $2")
+            .await
+            .unwrap();
+
+        client.query(&stmt_groups, &[&gender, &group_type]).await
+    };
 
     match groups_result {
         Ok(group_rows) => {
