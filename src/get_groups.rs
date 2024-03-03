@@ -16,13 +16,13 @@ pub async fn get_groups_api(
 ) -> impl Responder {
     let client = db.get().await.unwrap();
 
-    let gender = path.0.trim();
+    let gender = path.1.trim();
 
     if gender != "boy" && gender != "girl" && gender != "all" {
         return HttpResponse::InternalServerError().finish();
     }
 
-    let group_type = path.1.trim();
+    let group_type = path.0.trim();
 
     if group_type != "group" && group_type != "solo" {
         return HttpResponse::InternalServerError().finish();
