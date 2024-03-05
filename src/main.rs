@@ -30,6 +30,9 @@ use add_group::add_group_api;
 mod pending_groups;
 use pending_groups::get_pending_teams_api;
 
+mod confirm_group;
+use confirm_group::confirm_group_api;
+
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     dotenv().ok();
@@ -74,6 +77,7 @@ async fn main() -> std::io::Result<()> {
             .service(get_members_api)
             .service(add_group_api)
             .service(get_pending_teams_api)
+            .service(confirm_group_api)
     })
     .workers(num_workers)
     .bind(("127.0.0.1", 9778))?

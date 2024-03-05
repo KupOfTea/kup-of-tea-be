@@ -5,10 +5,9 @@ use actix_web::{
     HttpResponse, Responder,
 };
 use deadpool_postgres::Pool;
-use std::fs;
 
 #[derive(serde::Deserialize)]
-pub struct DeleteInfo {
+pub struct ConfirmInfo {
     id: i64,
     name: String,
     logo: String,
@@ -24,7 +23,7 @@ pub struct DeleteInfo {
 #[post("/api/delete")]
 pub async fn confirm_group_api(
     identity: Option<Identity>,
-    info: web::Form<DeleteInfo>,
+    info: web::Form<ConfirmInfo>,
     db: web::Data<Pool>,
 ) -> impl Responder {
     let _id = match identity.map(|id| id.id()) {
@@ -32,6 +31,8 @@ pub async fn confirm_group_api(
         Some(Ok(id)) => id,
         Some(Err(_)) => return HttpResponse::Forbidden().body("No"),
     };
+
+    let client = db.get().await.unwrap();
 
     HttpResponse::Ok().body("Ok")
 }
