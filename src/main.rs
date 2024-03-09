@@ -33,6 +33,9 @@ use pending_groups::get_pending_teams_api;
 mod confirm_group;
 use confirm_group::confirm_group_api;
 
+mod add_images;
+use add_images::{add_image_api, upload_cors2};
+
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     dotenv().ok();
@@ -79,6 +82,8 @@ async fn main() -> std::io::Result<()> {
             .service(get_pending_teams_api)
             .service(confirm_group_api)
             .service(upload_cors)
+            .service(add_image_api)
+            .service(upload_cors2)
     })
     .workers(num_workers)
     .bind(("127.0.0.1", 9778))?
