@@ -25,7 +25,7 @@ mod get_members;
 use get_members::get_members_api;
 
 mod add_group;
-use add_group::add_group_api;
+use add_group::{add_group_api, upload_cors};
 
 mod pending_groups;
 use pending_groups::get_pending_teams_api;
@@ -78,6 +78,7 @@ async fn main() -> std::io::Result<()> {
             .service(add_group_api)
             .service(get_pending_teams_api)
             .service(confirm_group_api)
+            .service(upload_cors)
     })
     .workers(num_workers)
     .bind(("127.0.0.1", 9778))?
