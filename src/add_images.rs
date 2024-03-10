@@ -1,3 +1,4 @@
+use actix_identity::Identity;
 use actix_multipart::Multipart;
 use actix_web::{
     options, post,
@@ -14,7 +15,11 @@ pub async fn upload_cors2() -> impl Responder {
 }
 
 #[post("/api/image/upload")]
-pub async fn add_image_api(mut payload: Multipart) -> HttpResponse {
+pub async fn add_image_api(mut payload: Multipart, identity: Option<Identity>) -> HttpResponse {
+    if identity.is_none() {
+        return HttpResponse::Forbidden().body("Access Denied");
+    }
+
     let mut image_count = 0;
 
     let mut files_hash: Vec<String> = vec![];
