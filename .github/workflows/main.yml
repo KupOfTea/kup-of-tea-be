@@ -30,7 +30,7 @@ jobs:
 
       - name: Build
         run: |
-          cargo build --release --target=aarch64-unknown-linux-gnu --features vendored-openssl
+          cargo build --release --target=aarch64-unknown-linux-gnu
 
       - name: Copy file via scp
         uses: appleboy/scp-action@master
